@@ -1,0 +1,14 @@
+{
+  "name": "@agentrust/trust",
+  "version": "0.1.0",
+  "description": "Capability tokens, delegation chains, and revocation for libp2p",
+  "type": "module",
+  "main": "src/TrustManager.js",
+  "exports": {
+    ".": "./src/TrustManager.js",
+    "./revocation": "./src/revocation.js",
+    "./capability": "./src/capability.js",
+    "./delegation": "./src/delegation.js",
+    "./sybil": "./src/sybil.js"
+  }
+}

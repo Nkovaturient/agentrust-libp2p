@@ -1,0 +1,31 @@
+{
+    "name": "@agentrust/node",
+    "version": "0.1.0",
+    "description": "libp2p node factory and role-based agent entry points",
+    "type": "module",
+    "main": "src/index.js",
+    "exports": {
+        ".": "./src/index.js",
+        "./createNode": "./src/createNode.js",
+        "./identity": "./src/identity.js",
+        "./nodeStatus": "./src/nodeStatus.js",
+        "./roles/bootstrap": "./src/roles/bootstrap.js",
+        "./roles/issuer": "./src/roles/issuer.js",
+        "./roles/delegatee": "./src/roles/delegatee.js",
+        "./roles/verifier": "./src/roles/verifier.js",
+        "./roles/attacker": "./src/roles/attacker.js"
+    },
+    "dependencies": {
+        "@agentrust/trust": "*",
+        "@chainsafe/libp2p-gossipsub": "^14.0.0",
+        "@chainsafe/libp2p-noise": "^16.0.0",
+        "@chainsafe/libp2p-yamux": "^7.0.0",
+      "@libp2p/bootstrap": "^11.0.0",
+      "@libp2p/identify": "^3.0.39",
+      "@libp2p/crypto": "^5.2.0",
+      "@multiformats/multiaddr": "^12.0.0",
+      "@libp2p/peer-id": "^5.1.9",
+        "@libp2p/websockets": "^9.0.0",
+        "libp2p": "^2.0.0"
+    }
+}

@@ -1,0 +1,125 @@
+# AgentTrust — 5-Node Testnet
+# Reviewers: run `docker compose -f docker/docker-compose.yml up --build --abort-on-container-exit --exit-code-from runner`
+# to reproduce all experiments. Structured JSON results are written to ./results/ on your host.
+#
+# Node identities derive from public seeds in config/<role>.env (testnet only).
+# Regenerate those files with `npm run docker:env`.
+
+x-node: &node
+  image: agentrust-node:local
+
+networks:
+  agentrust-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+
+services:
+
+  # ── Bootstrap / Relay ───────────────────────────────────────────────────
+  bootstrap:
+    <<: *node
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.node
+    container_name: agentrust-bootstrap
+    env_file: config/bootstrap.env
+    environment:
+      - ROLE=bootstrap
+      - LISTEN_ADDR=/ip4/0.0.0.0/tcp/9000/ws
+      - CONTROL_PORT=9001
+    ports:
+      - "9000:9000"
+    networks:
+      agentrust-net:
+        ipv4_address: 172.28.0.10
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://127.0.0.1:9001/health', r => process.exit(r.statusCode===200?0:1)).on('error', () => process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 6
+      start_period: 5s
+
+  # ── Issuer — root trust authority ───────────────────────────────────────
+  issuer:
+    <<: *node
+    container_name: agentrust-issuer
+    env_file: config/issuer.env
+    environment:
+      - ROLE=issuer
+      - LISTEN_ADDR=/ip4/0.0.0.0/tcp/9001/ws
+    depends_on:
+      bootstrap:
+        condition: service_healthy
+    networks:
+      agentrust-net:
+        ipv4_address: 172.28.0.11
+
+  # ── Delegatee — receives and re-delegates capabilities ──────────────────
+  delegatee:
+    <<: *node
+    container_name: agentrust-delegatee
+    env_file: config/delegatee.env
+    environment:
+      - ROLE=delegatee
+      - LISTEN_ADDR=/ip4/0.0.0.0/tcp/9002/ws
+    depends_on:
+      bootstrap:
+        condition: service_healthy
+    networks:
+      agentrust-net:
+        ipv4_address: 172.28.0.12
+
+  # ── Verifier — independent trust verifier ───────────────────────────────
+  verifier:
+    <<: *node
+    container_name: agentrust-verifier
+    env_file: config/verifier.env
+    environment:
+      - ROLE=verifier
+      - LISTEN_ADDR=/ip4/0.0.0.0/tcp/9003/ws
+    depends_on:
+      bootstrap:
+        condition: service_healthy
+    networks:
+      agentrust-net:
+        ipv4_address: 172.28.0.13
+
+  # ── Attacker — Sybil probe node ──────────────────────────────────────────
+  attacker:
+    <<: *node
+    container_name: agentrust-attacker
+    env_file: config/attacker.env
+    environment:
+      - ROLE=attacker
+      - LISTEN_ADDR=/ip4/0.0.0.0/tcp/9004/ws
+    depends_on:
+      bootstrap:
+        condition: service_healthy
+    networks:
+      agentrust-net:
+        ipv4_address: 172.28.0.14
+
+  # ── Experiment Runner — drives the nodes over their control API ──────────
+  runner:
+    <<: *node
+    container_name: agentrust-runner
+    environment:
+      - AGENTRUST_MODE=docker
+      - BOOTSTRAP_CONTROL_URL=http://172.28.0.10:9001
+      - ISSUER_CONTROL_URL=http://172.28.0.11:8080
+      - DELEGATEE_CONTROL_URL=http://172.28.0.12:8080
+      - VERIFIER_CONTROL_URL=http://172.28.0.13:8080
+      - ATTACKER_CONTROL_URL=http://172.28.0.14:8080
+    depends_on:
+      - issuer
+      - delegatee
+      - verifier
+      - attacker
+    volumes:
+      - ../results:/app/results
+    networks:
+      agentrust-net:
+        ipv4_address: 172.28.0.20
+    command: ["node", "packages/experiments/runner.js"]

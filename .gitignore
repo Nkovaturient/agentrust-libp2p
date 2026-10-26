@@ -1,0 +1,9 @@
+node_modules/
+results/*.json
+!results/experiment-run-canonical.json
+!results/experiment-run-canonical-docker.json
+!results/bench-summary.json
+.env
+*.local
+.DS_Store
+dist/

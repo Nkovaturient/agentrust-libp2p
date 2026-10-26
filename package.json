@@ -1,0 +1,24 @@
+{
+    "name": "agentrustweave-libp2p",
+    "version": "0.1.0",
+    "description": "Agentic Trust Structures for libp2p",
+    "type": "module",
+    "workspaces": [
+        "packages/trust",
+        "packages/node",
+        "packages/experiments"
+    ],
+    "scripts": {
+        "test": "node --experimental-vm-modules node_modules/.bin/jest --passWithNoTests",
+        "experiment": "node packages/experiments/runner.js",
+        "experiment:bench": "node scripts/bench-experiments.mjs",
+        "docker:env": "node docker/scripts/gen-testnet-env.mjs",
+        "dev": "node packages/node/src/index.js"
+    },
+    "devDependencies": {
+        "jest": "^29.7.0"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    }
+}

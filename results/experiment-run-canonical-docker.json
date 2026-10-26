@@ -1,0 +1,330 @@
+{
+  "runId": "2026-10-26T14-20-08-270Z",
+  "mode": "docker",
+  "startedAt": "2026-10-26T14:20:08.416Z",
+  "environment": {
+    "nodeVersion": "v22.23.4",
+    "meshNodes": 5
+  },
+  "scenarios": [
+    {
+      "id": "01-delegation-chain",
+      "result": {
+        "passed": true,
+        "reason": "chains of depth 1-8 verified, depth 9 rejected, verifier never connected to the issuer"
+      },
+      "metrics": {
+        "maxDepthAccepted": 8,
+        "repetitionsPerDepth": 5,
+        "depths": [
+          {
+            "depth": 1,
+            "chainLength": 1,
+            "valid": true,
+            "reason": "ok",
+            "verifyMs": {
+              "samples": [
+                0.765,
+                0.552,
+                0.521,
+                0.583,
+                0.749
+              ],
+              "median": 0.583,
+              "min": 0.521,
+              "max": 0.765
+            }
+          },
+          {
+            "depth": 2,
+            "chainLength": 2,
+            "valid": true,
+            "reason": "ok",
+            "verifyMs": {
+              "samples": [
+                0.788,
+                0.614,
+                0.563,
+                0.517,
+                0.576
+              ],
+              "median": 0.576,
+              "min": 0.517,
+              "max": 0.788
+            }
+          },
+          {
+            "depth": 3,
+            "chainLength": 3,
+            "valid": true,
+            "reason": "ok",
+            "verifyMs": {
+              "samples": [
+                0.683,
+                0.588,
+                0.544,
+                0.554,
+                0.602
+              ],
+              "median": 0.588,
+              "min": 0.544,
+              "max": 0.683
+            }
+          },
+          {
+            "depth": 4,
+            "chainLength": 4,
+            "valid": true,
+            "reason": "ok",
+            "verifyMs": {
+              "samples": [
+                0.663,
+                0.584,
+                0.628,
+                0.633,
+                0.619
+              ],
+              "median": 0.628,
+              "min": 0.584,
+              "max": 0.663
+            }
+          },
+          {
+            "depth": 5,
+            "chainLength": 5,
+            "valid": true,
+            "reason": "ok",
+            "verifyMs": {
+              "samples": [
+                0.696,
+                0.637,
+                0.643,
+                0.648,
+                0.64
+              ],
+              "median": 0.643,
+              "min": 0.637,
+              "max": 0.696
+            }
+          },
+          {
+            "depth": 6,
+            "chainLength": 6,
+            "valid": true,
+            "reason": "ok",
+            "verifyMs": {
+              "samples": [
+                0.789,
+                0.776,
+                0.768,
+                0.85,
+                1.191
+              ],
+              "median": 0.789,
+              "min": 0.768,
+              "max": 1.191
+            }
+          },
+          {
+            "depth": 7,
+            "chainLength": 7,
+            "valid": true,
+            "reason": "ok",
+            "verifyMs": {
+              "samples": [
+                0.908,
+                0.781,
+                0.778,
+                0.749,
+                0.741
+              ],
+              "median": 0.778,
+              "min": 0.741,
+              "max": 0.908
+            }
+          },
+          {
+            "depth": 8,
+            "chainLength": 8,
+            "valid": true,
+            "reason": "ok",
+            "verifyMs": {
+              "samples": [
+                0.821,
+                0.815,
+                0.866,
+                0.786,
+                0.72
+              ],
+              "median": 0.815,
+              "min": 0.72,
+              "max": 0.866
+            }
+          },
+          {
+            "depth": 9,
+            "chainLength": 9,
+            "valid": false,
+            "reason": "Chain depth 9 exceeds maximum 8",
+            "verifyMs": {
+              "samples": [
+                0.45,
+                1.546,
+                0.394,
+                0.372,
+                0.315
+              ],
+              "median": 0.394,
+              "min": 0.315,
+              "max": 1.546
+            }
+          }
+        ],
+        "verifierConnectedToIssuer": {
+          "before": false,
+          "after": false
+        }
+      }
+    },
+    {
+      "id": "02-revocation-timing",
+      "result": {
+        "passed": true,
+        "reason": "verifier accepted before and rejected after revocation in all 3 rounds"
+      },
+      "metrics": {
+        "timeoutMs": 2000,
+        "rounds": [
+          {
+            "tokenId": "c90b3d91-05d6-4d6d-9685-1c2dd176997e",
+            "beforeValid": true,
+            "propagationMs": 4.548,
+            "afterValid": false,
+            "afterReason": "Token at index 0: Token c90b3d91-05d6-4d6d-9685-1c2dd176997e has been revoked"
+          },
+          {
+            "tokenId": "61739e42-8032-473b-9d37-177ad08597b0",
+            "beforeValid": true,
+            "propagationMs": 5.002,
+            "afterValid": false,
+            "afterReason": "Token at index 0: Token 61739e42-8032-473b-9d37-177ad08597b0 has been revoked"
+          },
+          {
+            "tokenId": "6c45d883-53f2-4a61-9571-67e21f08351e",
+            "beforeValid": true,
+            "propagationMs": 4.863,
+            "afterValid": false,
+            "afterReason": "Token at index 0: Token 6c45d883-53f2-4a61-9571-67e21f08351e has been revoked"
+          }
+        ],
+        "propagationMs": {
+          "samples": [
+            4.548,
+            5.002,
+            4.863
+          ],
+          "median": 4.863,
+          "min": 4.548,
+          "max": 5.002
+        }
+      }
+    },
+    {
+      "id": "03-sybil-probe",
+      "result": {
+        "passed": true,
+        "reason": "forgery, chain theft, and non-delegatable extension were rejected; the legitimate chain still verifies"
+      },
+      "metrics": {
+        "attacks": {
+          "forgery": {
+            "rejected": true,
+            "probeReason": "Signature mismatch — key does not match claimed issuer",
+            "verifyReason": "Token at index 0: Invalid signature on token e11d8063-8d36-4c7d-a50b-1afc2ecd96e4"
+          },
+          "theft": {
+            "rejected": true,
+            "verifyReason": "Chain subject mismatch: expected 12D3KooWLrv8hPa3NfBgVczm7agFSbd2KYJibdvaDHmnrhf7NfxF, got 12D3KooWBe4SpL9yZsAZq5QNcFdLQzBXGBsnhiwSy79jeZbjT8jA"
+          },
+          "nonDelegatableExtension": {
+            "rejected": true,
+            "errorMessage": "Token 286f888b-c9dd-45f6-b3d7-1acdf6592ec0 is not delegatable"
+          }
+        },
+        "legitimateControl": {
+          "valid": true,
+          "reason": "ok"
+        }
+      }
+    },
+    {
+      "id": "04-multihop-chain",
+      "result": {
+        "passed": true,
+        "reason": "5-token chain verified; 4 spliced or tampered chains rejected for the expected reason"
+      },
+      "metrics": {
+        "legitimate": {
+          "depth": 5,
+          "chainLength": 5,
+          "valid": true,
+          "reason": "ok",
+          "linked": true,
+          "ok": true
+        },
+        "integrityChecks": [
+          {
+            "name": "brokenLinkage",
+            "valid": false,
+            "reason": "Chain break at index 1: expected issuer 12D3KooWEnvcuZQuaiopz2KaNQbRgqhvskkNwL2annpYpxpsRVVt, got 12D3KooWLJob4PpobZcCbf2cD7S8oAZK6wmV6A8ijopv9odXVZNF",
+            "rejectedAsExpected": true
+          },
+          {
+            "name": "wrongParentTokenId",
+            "valid": false,
+            "reason": "Chain break at index 1: expected parentTokenId b15964ad-b731-4300-8b21-11ba38cb77c1, got b3e0520c-6e9a-4d3a-ab7e-9008000efaa8",
+            "rejectedAsExpected": true
+          },
+          {
+            "name": "nonDelegatableIntermediate",
+            "valid": false,
+            "reason": "Token at index 0 is not delegatable but chain continues",
+            "rejectedAsExpected": true
+          },
+          {
+            "name": "tamperedAction",
+            "valid": false,
+            "reason": "Token at index 1: Invalid signature on token 9b0c616f-3cae-46f1-9ea7-85913d15ceb8",
+            "rejectedAsExpected": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "05-concurrent-revocation",
+      "result": {
+        "passed": true,
+        "reason": "verifier accepted both tokens, then rejected both after their concurrent revocations propagated"
+      },
+      "metrics": {
+        "timeoutMs": 2000,
+        "tokenIds": [
+          "1ff9fc6a-5f06-4c69-8fd6-528c64c4f227",
+          "5378f028-8314-4d69-b38b-38261a8bf5d9"
+        ],
+        "perTokenMs": [
+          3.621,
+          3.717
+        ],
+        "allRevokedMs": 3.717
+      }
+    }
+  ],
+  "summary": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "allPassed": true,
+    "finishedAt": "2026-10-26T14:20:08.515Z"
+  }
+}
