@@ -1,6 +1,45 @@
-# agentrustweave-libp2p
+<p align="center">
+  <img src="assets/atl.png" alt="AgenTrust mark: five peer nodes linked by a teal chain around a brass seal" width="180" />
+
+
+<h1 align="center">AgenTrust-Libp2p</h1>
+
+</p>
+<p align="center">
+  <img alt="Requires Node.js 22 or newer" src="https://img.shields.io/badge/node-%3E%3D22-339933?logo=nodedotjs&logoColor=white" />
+  <a href="https://libp2p.io"><img alt="libp2p 2.x" src="https://img.shields.io/badge/libp2p-2.x-0ea5e9" /></a>
+  <img alt="MIT license" src="https://img.shields.io/badge/license-MIT-6b7280" />
+  <a href="https://libp2p.tech/research-track"><img alt="Devcon 8 Track 4" src="https://img.shields.io/badge/Devcon%208-Track%204-7c3aed" /></a>
+</p>
 
 > **Track 4 — Agentic Trust Structures** · libp2p Resilient Networking Research Track · Devcon 8 Mumbai 2026
+
+<p align="center">
+  <img src="assets/agentrust-banner.jpg" alt="Five peers in a weave, a capability chain across issue, delegate, and verify, and a revoke that lifts off the mesh" width="880" />
+</p>
+
+<p align="center"><sub>Peer weave, then the grant: issue → delegate → verify. The last link lifts off: revoke.</sub></p>
+
+## How a grant moves
+
+libp2p already answers who the peer is. The chain below is what that peer may do, and how the grant is withdrawn.
+
+```mermaid
+flowchart TD
+  issue["1. Issue: capability bound to a Peer ID"]
+  delegate["2. Delegate: chain depth 1 to 8"]
+  verify["3. Verify: local keys, no issuer dial"]
+  decision{"Valid and not revoked?"}
+  act["Peer may act"]
+  deny["Reject: depth 9, splice, or forgery"]
+  revoke["4. Revoke: issuer-signed GossipSub event"]
+  registry["Local revocation registry"]
+
+  issue --> delegate --> verify --> decision
+  decision -->|yes| act
+  decision -->|no| deny
+  revoke --> registry --> verify
+```
 
 Research prototype + living paper: how **libp2p peers (and agent nodes on top of them)** can **authorize** each other without a central authority — using primitives libp2p already has (PeerID, Noise, GossipSub).
 
@@ -130,12 +169,6 @@ docker compose -f docker/docker-compose.yml up --build --abort-on-container-exit
 ```
 
 Testnet node identities derive from public seed labels in `docker/config/<role>.env` (testnet only, not secrets). Regenerate those files with `npm run docker:env`.
-
----
-
-## Repo map
-
-See tree in previous revisions — `packages/trust`, `packages/node`, `packages/experiments`, `docker/`, `paper/`, `docs/`, `results/`.
 
 ---
 
