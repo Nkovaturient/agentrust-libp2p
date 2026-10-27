@@ -1,20 +1,23 @@
 # AgentTrust: Decentralised Capability Delegation and Revocation for Autonomous libp2p Nodes
 
-**Author:** Nkovaturient (Neha Kumari)  
+**Author:** Neha Kumari 
 **Track:** Track 4 — Agentic Trust Structures  
-**Submission:** libp2p Resilient Networking Research Track · Devcon 8 Mumbai 2026  
-**Repository:** https://github.com/Nkovaturient/agentrust-libp2p  
+**Submission:** Libp2p2035: Resilient Networking Research Track · Devcon 8 Mumbai 2026  
+**Repo:** https://github.com/Nkovaturient/agentrust-libp2p  
 **Status:** Draft — PoC, five measured scenarios, and Docker testnet are in the repo; reputation, economic Sybil resistance, and zero-knowledge proofs are design-only  
+
+<img width="2172" height="724" alt="ChatGPT Image Oct 27, 2026, 04_49_40 PM" src="https://github.com/user-attachments/assets/01fb231c-4ee2-4aeb-8d8d-57cf4a8550d9" />
+
 
 ---
 
 ## Abstract
 
-- As peer-to-peer networks evolve to host autonomous agents rather than passive data-sharing nodes, the question of inter-node trust becomes critical: 
+As peer-to-peer networks evolve to host autonomous agents rather than passive data-sharing nodes, the question of inter-node trust becomes critical: 
 
 > how does a node know that another node is genuinely authorised to perform an action, without consulting a central authority? 
 
-- Existing libp2p infrastructure provides strong *identity* (via Ed25519 PeerIDs and the Noise protocol) but no native mechanism for *authorisation*. 
+Existing libp2p infrastructure provides strong *identity* (via Ed25519 PeerIDs and the Noise protocol) but no native mechanism for *authorisation*. 
 
 - I present **AgentTrust**, a lightweight trust layer for libp2p that introduces signed capability tokens, transitive delegation chains, gossip-propagated revocation, and cryptographic Sybil resistance — all built exclusively on primitives already present in the js-libp2p stack. 
 
@@ -25,7 +28,6 @@
   
 - Track 4 scope for this submission: **capabilities, delegated chains, verifiable authorization, gossip revocation, and cryptographic forgery resistance** — not a full eight-pillar trust stack in one PoC.
 
----
 
 ## 1. Introduction
 
@@ -43,23 +45,21 @@ Prior work on decentralised authorisation (UCAN [UCAN2023], capability-based sec
 5. Five reproducible experiment scenarios covering delegation, revocation, and Sybil resistance (§6).
 6. An honest analysis of limitations and future directions, including zero-knowledge reputation (§7).
 
----
 
 ## 2. Related Work
 
-**Capability-based security** was formalised by Miller et al. [Miller2003] and operationalised in systems such as the E language and later object-capability models for distributed systems. UCAN (User-Controlled Authorisation Networks) [UCAN2023] applies capability tokens to decentralised identity contexts, particularly in the IPFS/Filecoin ecosystem. my work is directly inspired by UCAN's token format but adapts it to libp2p PeerIDs and integrates revocation via GossipSub rather than through a separate channel.
+i. **Capability-based security** was formalised by Miller et al. [Miller2003] and operationalised in systems such as the E language and later object-capability models for distributed systems. UCAN (User-Controlled Authorisation Networks) [UCAN2023] applies capability tokens to decentralised identity contexts, particularly in the IPFS/Filecoin ecosystem. my work is directly inspired by UCAN's token format but adapts it to libp2p PeerIDs and integrates revocation via GossipSub rather than through a separate channel.
 
-**libp2p identity and security.** The Noise protocol framework [Perrin2018], as implemented in libp2p, provides authenticated key exchange and encrypted streams. Every libp2p node already possesses an Ed25519 keypair from which its PeerID is derived. AgentTrust reuses these keys for capability signing, adding no new key management burden. Official libp2p documentation stresses that Peer ID authentication is distinct from authorization: applications must define who may do what [libp2pSec] — the gap AgentTrust targets.
+ii. **libp2p identity and security.** The Noise protocol framework [Perrin2018], as implemented in libp2p, provides authenticated key exchange and encrypted streams. Every libp2p node already possesses an Ed25519 keypair from which its PeerID is derived. AgentTrust reuses these keys for capability signing, adding no new key management burden. Official libp2p documentation stresses that Peer ID authentication is distinct from authorization: applications must define who may do what [libp2pSec] — the gap AgentTrust targets.
 
-**GossipSub** [Vyzovitis2020] is libp2p's publish-subscribe protocol, used in Ethereum 2.0 for beacon block propagation. GossipSub v1.1 introduced peer scoring and spam resistance. We use GossipSub as the revocation dissemination channel — a natural fit given that revocations are small, broadcast-oriented events that benefit from the same mesh topology.
+iii. **GossipSub** [Vyzovitis2020] is libp2p's publish-subscribe protocol, used in Ethereum 2.0 for beacon block propagation. GossipSub v1.1 introduced peer scoring and spam resistance. We use GossipSub as the revocation dissemination channel — a natural fit given that revocations are small, broadcast-oriented events that benefit from the same mesh topology.
 
-**Agentic P2P networks.** Wang et al. [Wang2025] identify capability sharing as a central primitive for next-generation agentic P2P systems, distinguishing content distribution (what libp2p does today) from capability and action sharing (what agentic systems need). AgentTrust is a concrete step toward the trust layer their work identifies as a gap.
+iv. **Agentic P2P networks.** Wang et al. [Wang2025] identify capability sharing as a central primitive for next-generation agentic P2P systems, distinguishing content distribution (what libp2p does today) from capability and action sharing (what agentic systems need). AgentTrust is a concrete step toward the trust layer their work identifies as a gap.
 
-**Inter-agent trust models.** Hu et al. [Hu2025] propose a taxonomy of inter-agent trust mechanisms including brief, claim, proof, stake, reputation, and constraint. AgentTrust implements the *proof* and *claim* layers (cryptographic capability chains) and lays groundwork for *reputation* (§7).
+v. **Inter-agent trust models.** Hu et al. [Hu2025] propose a taxonomy of inter-agent trust mechanisms including brief, claim, proof, stake, reputation, and constraint. AgentTrust implements the *proof* and *claim* layers (cryptographic capability chains) and lays groundwork for *reputation* (§7).
 
-**Prior work by the author.** This project builds directly on the author's prior open-source libp2p contributions: LLMesh [LLMesh] (GossipSub-based P2P mesh with embedded LLM nodes), Rachax402 [Rachax402] (agent discovery via ERC-8004 and x402 payment-gated execution), and Lattice [Lattice] (private solver mesh with intent routing). These demonstrate practical familiarity with js-libp2p and are cited as engineering prior art rather than academic novelty.
+vi. **Prior work by the author.** This project builds directly on the author's prior open-source libp2p contributions: LLMesh [LLMesh] (GossipSub-based P2P mesh with embedded LLM nodes), Rachax402 [Rachax402] (agent discovery via ERC-8004 and x402 payment-gated execution), and Lattice [Lattice] (private solver mesh with intent routing). These demonstrate practical familiarity with js-libp2p and are cited as engineering prior art rather than academic novelty.
 
----
 
 ## 3. Protocol Design
 
@@ -183,7 +183,7 @@ Reviewers can reproduce all experiments with:
 
 ```bash
 git clone https://github.com/Nkovaturient/agentrust-libp2p
-cd agentrustweave-libp2p
+cd agentrust-libp2p
 docker compose -f docker/docker-compose.yml up --build --abort-on-container-exit --exit-code-from runner
 # Results written to ./results/experiment-run-<timestamp>.json
 ```
@@ -296,7 +296,6 @@ The canonical local run is above the 5-run range, which shows how much run-to-ru
 - Revocation timings have a 2 ms polling resolution, and Docker timings include HTTP orchestration overhead.
 - Scenarios 04 and 05 run in the same mesh as the earlier scenarios and use fresh token identifiers rather than a fresh mesh per scenario.
 
----
 
 ## 7. Limitations and Future Work
 
@@ -327,7 +326,6 @@ This is listed as future work. No ZK implementation is included in this prototyp
 
 GossipSub provides probabilistic eventual delivery, not guaranteed delivery. An adversary who can partition the network may prevent revocation events from reaching some nodes. Stronger revocation guarantees (e.g., periodic full-state sync, revocation accumulator with Merkle proofs) are proposed as future protocol extensions.
 
----
 
 ## 8. Contribution to Resilient Networking
 
@@ -338,38 +336,42 @@ AgentTrust advances the libp2p ecosystem in the following ways:
 - **Revocation via gossip**: integrates token invalidation with the existing mesh broadcast infrastructure, making revocation a first-class citizen of the P2P fabric rather than a centralised side-channel.
 - **Open research problems surfaced**: ZK reputation, economic Sybil resistance, and identity continuity are clearly identified and framed as concrete future research targets for the libp2p community.
 
----
 
 ## 9. Conclusion
 
-We presented AgentTrust, a lightweight trust protocol for libp2p that enables autonomous nodes to issue, delegate, verify, and revoke capability tokens without any central authority. The protocol is implemented as a proof-of-concept in JavaScript on Node.js, reproduced in a five-node Docker Compose testnet, and evaluated across five experiment scenarios covering delegation depth, revocation propagation, forgery and theft attempts, chain integrity, and concurrent revocation. All measured claims in this paper trace to committed result files; everything else is labelled not measured or proposed. We believe AgentTrust provides a practical, near-term foundation for Trust-as-infrastructure in the libp2p ecosystem, and a concrete starting point for the deeper open problems of ZK reputation and economic Sybil resistance.
+- I presented **AgentTrust, a lightweight trust protocol for libp2p** that enables autonomous nodes to issue, delegate, verify, and revoke capability tokens without any central authority. 
 
----
+- The protocol is implemented as a proof-of-concept in JavaScript on Node.js, reproduced in a five-node Docker Compose testnet, and evaluated across five experiment scenarios covering delegation depth, revocation propagation, forgery and theft attempts, chain integrity, and concurrent revocation. All measured claims in this paper trace to committed result files; everything else is labelled not measured or proposed.
+- I believe **AgentTrust provides a practical, near-term foundation for Trust-as-infrastructure in the libp2p ecosystem, and a concrete starting point for the deeper open problems of ZK reputation and economic Sybil resistance.**
+
+<div align="center">
+<img width="554" height="604" alt="atl" src="https://github.com/user-attachments/assets/62cc9740-feda-4ecf-8df7-7d15fd4d99e5" />
+</div>
 
 ## References
 
-[Hardy1988] Hardy, N. (1988). *The Confused Deputy: (or why capabilities might have been invented).* ACM SIGOPS Operating Systems Review.
+- [Hardy1988] Hardy, N. (1988). *The Confused Deputy: (or why capabilities might have been invented).* ACM SIGOPS Operating Systems Review.
 
-[Miller2003] Miller, M., Yee, K., Shapiro, J. (2003). *Capability Myths Demolished.* Technical Report SRL2003-02, Systems Research Laboratory.
+- [Miller2003] Miller, M., Yee, K., Shapiro, J. (2003). *Capability Myths Demolished.* Technical Report SRL2003-02, Systems Research Laboratory.
 
-[Perrin2018] Perrin, T. (2018). *The Noise Protocol Framework.* https://noiseprotocol.org/noise.html
+- [Perrin2018] Perrin, T. (2018). *The Noise Protocol Framework.* https://noiseprotocol.org/noise.html
 
-[UCAN2023] Fission / DAG House. (2023). *UCAN Specification v1.0.* https://github.com/ucan-wg/spec
+- [UCAN2023] Fission / DAG House. (2023). *UCAN Specification v1.0.* https://github.com/ucan-wg/spec
 
-[Vyzovitis2020] Vyzovitis, D., Napora, Y., McCormick, D., Dias, D., Psaras, Y. (2020). *GossipSub: Attack-Resilient Message Propagation in the Filecoin and ETH2.0 Networks.* arXiv:2007.02754.
+- [Vyzovitis2020] Vyzovitis, D., Napora, Y., McCormick, D., Dias, D., Psaras, Y. (2020). *GossipSub: Attack-Resilient Message Propagation in the Filecoin and ETH2.0 Networks.* arXiv:2007.02754.
 
-[Wang2025] Wang, R. et al. (2025). *Agentic Peer-to-Peer Networks: From Content Distribution to Capability and Action Sharing.* arXiv:2603.03753.
+- [Wang2025] Wang, R. et al. (2025). *Agentic Peer-to-Peer Networks: From Content Distribution to Capability and Action Sharing.* arXiv:2603.03753.
 
-[Hu2025] Hu, Y. et al. (2025). *Inter-Agent Trust Models.* arXiv:2511.03434.
+- [Hu2025] Hu, Y. et al. (2025). *Inter-Agent Trust Models.* arXiv:2511.03434.
 
-[LLMesh] Nkovaturient. (2024). *LLMesh — GossipSub P2P chat mesh with embedded LLM nodes.* https://github.com/Nkovaturient/LLMesh
+- [LLMesh] Nkovaturient. (2024). *LLMesh — GossipSub P2P chat mesh with embedded LLM nodes.* https://github.com/Nkovaturient/LLMesh
 
-[Rachax402] Nkovaturient. (2025). *Rachax402 — Agent discovery via ERC-8004 + x402.* https://github.com/Nkovaturient/Rachax402
+- [Rachax402] Nkovaturient. (2025). *Rachax402 — Agent discovery via ERC-8004 + x402.* https://github.com/Nkovaturient/Rachax402
 
-[Lattice] Nkovaturient. (2025). *Lattice — js-libp2p private solver mesh.* https://github.com/Nkovaturient/Lattice
+- [Lattice] Nkovaturient. (2025). *Lattice — js-libp2p private solver mesh.* https://github.com/Nkovaturient/Lattice
 
-[libp2pSpecs] libp2p. (2025). *libp2p Specifications.* https://github.com/libp2p/specs
+- [libp2pSpecs] libp2p. (2025). *libp2p Specifications.* https://github.com/libp2p/specs
 
-[libp2pSec] libp2p. *Security Considerations.* https://libp2p.io/docs/security-considerations/
+- [libp2pSec] libp2p. *Security Considerations.* https://libp2p.io/docs/security-considerations/
 
-[libp2pTrack04] libp2p. *Resilient Networking Research Track — Agentic Trust Structures.* https://libp2p.tech/research-track
+- [libp2pTrack04] libp2p. *Resilient Networking Research Track — Agentic Trust Structures.* https://libp2p.tech/research-track
