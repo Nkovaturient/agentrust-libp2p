@@ -10,7 +10,20 @@
 
 ## Abstract
 
-As peer-to-peer networks evolve to host autonomous agents rather than passive data-sharing nodes, the question of inter-node trust becomes critical: how does a node know that another node is genuinely authorised to perform an action, without consulting a central authority? Existing libp2p infrastructure provides strong *identity* (via Ed25519 PeerIDs and the Noise protocol) but no native mechanism for *authorisation*. We present **AgentTrust**, a lightweight trust layer for libp2p that introduces signed capability tokens, transitive delegation chains, gossip-propagated revocation, and cryptographic Sybil resistance — all built exclusively on primitives already present in the js-libp2p stack. We describe the protocol design, implement a proof-of-concept in JavaScript on Node.js, and evaluate it across five experiment scenarios on a five-node local mesh and a five-container Docker Compose testnet. In our measurements, delegation chains of depth 1 to 8 verify at roughly 0.05 ms per token while the verifier holds no connection to the issuer, and depth 9 is rejected; revocations reach a verifier in a few milliseconds on a single host; and the three forgery, chain-theft, and non-delegatable-extension attempts we ran were all rejected. The experiments also exposed a missing parent-link check in chain verification, which is now fixed. We identify economic Sybil resistance, reputation, identity continuity, and zero-knowledge reputation as open problems aligned with libp2p’s own security guidance (authorization and Sybil mitigations live above the transport layer [libp2pSec]). Track 4 scope for this submission: **capabilities, delegated chains, verifiable authorization, gossip revocation, and cryptographic forgery resistance** — not a full eight-pillar trust stack in one PoC.
+- As peer-to-peer networks evolve to host autonomous agents rather than passive data-sharing nodes, the question of inter-node trust becomes critical: 
+
+> how does a node know that another node is genuinely authorised to perform an action, without consulting a central authority? 
+
+- Existing libp2p infrastructure provides strong *identity* (via Ed25519 PeerIDs and the Noise protocol) but no native mechanism for *authorisation*. 
+
+- I present **AgentTrust**, a lightweight trust layer for libp2p that introduces signed capability tokens, transitive delegation chains, gossip-propagated revocation, and cryptographic Sybil resistance — all built exclusively on primitives already present in the js-libp2p stack. 
+
+  - We describe the protocol design, implement a proof-of-concept in JavaScript on Node.js, and evaluate it across five experiment scenarios on a five-node local mesh and a five-container Docker Compose testnet. 
+  - In my measurements, delegation chains of depth 1 to 8 verify at roughly 0.05 ms per token while the verifier holds no connection to the issuer, and depth 9 is rejected; revocations reach a verifier in a few milliseconds on a single host; and the three forgery, chain-theft, and non-delegatable-extension attempts we ran were all rejected. 
+  - The experiments also exposed a missing parent-link check in chain verification, which is now fixed. 
+  - We identify economic Sybil resistance, reputation, identity continuity, and zero-knowledge reputation as open problems aligned with libp2p’s own security guidance (authorization and Sybil mitigations live above the transport layer [libp2pSec]). 
+  
+- Track 4 scope for this submission: **capabilities, delegated chains, verifiable authorization, gossip revocation, and cryptographic forgery resistance** — not a full eight-pillar trust stack in one PoC.
 
 ---
 
@@ -34,7 +47,7 @@ Prior work on decentralised authorisation (UCAN [UCAN2023], capability-based sec
 
 ## 2. Related Work
 
-**Capability-based security** was formalised by Miller et al. [Miller2003] and operationalised in systems such as the E language and later object-capability models for distributed systems. UCAN (User-Controlled Authorisation Networks) [UCAN2023] applies capability tokens to decentralised identity contexts, particularly in the IPFS/Filecoin ecosystem. Our work is directly inspired by UCAN's token format but adapts it to libp2p PeerIDs and integrates revocation via GossipSub rather than through a separate channel.
+**Capability-based security** was formalised by Miller et al. [Miller2003] and operationalised in systems such as the E language and later object-capability models for distributed systems. UCAN (User-Controlled Authorisation Networks) [UCAN2023] applies capability tokens to decentralised identity contexts, particularly in the IPFS/Filecoin ecosystem. my work is directly inspired by UCAN's token format but adapts it to libp2p PeerIDs and integrates revocation via GossipSub rather than through a separate channel.
 
 **libp2p identity and security.** The Noise protocol framework [Perrin2018], as implemented in libp2p, provides authenticated key exchange and encrypted streams. Every libp2p node already possesses an Ed25519 keypair from which its PeerID is derived. AgentTrust reuses these keys for capability signing, adding no new key management burden. Official libp2p documentation stresses that Peer ID authentication is distinct from authorization: applications must define who may do what [libp2pSec] — the gap AgentTrust targets.
 
