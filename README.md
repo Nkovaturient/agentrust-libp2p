@@ -89,6 +89,35 @@ We are **not** claiming a full “trust stack” yet. Reputation, privacy-preser
 - **local** (default) — five in-process libp2p nodes (`npm run experiment`) for fast CI and bench medians.  
 - **docker** — separate containers, **real** inter-container GossipSub for revoke; runner uses **HTTP only to orchestrate** experiments (issue/delegate/verify/revoke commands), **not** as the trust protocol. The control API is unauthenticated and meant for the private compose network only.
 
+### Architecture
+
+```mermaid
+flowchart TB
+  subgraph localMode [Local mode]
+    RunnerLocal[runner.js]
+    RunnerLocal --> InProcessAgents[5 in-process libp2p agents]
+  end
+  subgraph dockerMode [Docker mode]
+    RunnerDocker[runner.js AGENTRUST_MODE=docker]
+    RunnerDocker -->|HTTP control| IssuerC[issuer container]
+    RunnerDocker -->|HTTP control| DelegateeC[delegatee container]
+    RunnerDocker -->|HTTP control| VerifierC[verifier container]
+    RunnerDocker -->|HTTP control| AttackerC[attacker container]
+    IssuerC --> BootstrapC[bootstrap p2p + /health]
+    DelegateeC --> BootstrapC
+    VerifierC --> BootstrapC
+    AttackerC --> BootstrapC
+    IssuerC -.GossipSub revocation.-> VerifierC
+  end
+  Scenarios[scenario-01..05] --> AgentIface[Agent adapter interface]
+  AgentIface --> InProcessAgents
+  AgentIface --> RemoteAgents[RemoteTrustManager HTTP client]
+```
+
+**Agent adapter** (new shared module): every scenario keeps the signature `runScenarioXX({ issuer, delegatee, verifier, attacker?, extras? })` where each agent is `{ role, peerId, publicKey, trustManager }`. `trustManager` is either real [`TrustManager`](agentrustweave-libp2p/packages/trust/src/TrustManager.js) (local) or a thin **HTTP client** with the same methods (`issue`, `delegate`, `verify`, `revoke`, `registry.isRevoked` via `GET /trust/revoked/:id`).
+
+Local mode stays fast for CI; Docker mode proves revocation and mesh behavior on container libp2p nodes.
+
 ---
 
 ## 3) Am I on the right track?

@@ -1,7 +1,7 @@
 {
-  "runId": "2026-10-26T19-19-50-758Z",
+  "runId": "2026-10-29T18-56-08-900Z",
   "mode": "local",
-  "startedAt": "2026-10-26T19:19:50.914Z",
+  "startedAt": "2026-10-29T18:56:09.057Z",
   "environment": {
     "nodeVersion": "v24.10.0",
     "meshNodes": 5
@@ -24,15 +24,15 @@
             "reason": "ok",
             "verifyMs": {
               "samples": [
-                0.261,
-                0.096,
-                0.087,
-                0.087,
-                0.081
+                0.245,
+                0.086,
+                0.079,
+                0.079,
+                0.074
               ],
-              "median": 0.087,
-              "min": 0.081,
-              "max": 0.261
+              "median": 0.079,
+              "min": 0.074,
+              "max": 0.245
             }
           },
           {
@@ -42,15 +42,15 @@
             "reason": "ok",
             "verifyMs": {
               "samples": [
-                0.164,
-                0.143,
-                0.146,
-                0.137,
+                0.157,
+                0.144,
+                0.147,
+                0.138,
                 0.138
               ],
-              "median": 0.143,
-              "min": 0.137,
-              "max": 0.164
+              "median": 0.144,
+              "min": 0.138,
+              "max": 0.157
             }
           },
           {
@@ -60,15 +60,15 @@
             "reason": "ok",
             "verifyMs": {
               "samples": [
-                0.208,
-                0.198,
-                0.193,
-                0.197,
-                0.192
+                0.202,
+                0.194,
+                0.191,
+                0.196,
+                0.191
               ],
-              "median": 0.197,
-              "min": 0.192,
-              "max": 0.208
+              "median": 0.194,
+              "min": 0.191,
+              "max": 0.202
             }
           },
           {
@@ -78,15 +78,15 @@
             "reason": "ok",
             "verifyMs": {
               "samples": [
-                0.269,
-                0.254,
-                0.255,
-                0.255,
-                0.253
+                0.267,
+                0.257,
+                0.252,
+                0.252,
+                0.25
               ],
-              "median": 0.255,
-              "min": 0.253,
-              "max": 0.269
+              "median": 0.252,
+              "min": 0.25,
+              "max": 0.267
             }
           },
           {
@@ -96,15 +96,15 @@
             "reason": "ok",
             "verifyMs": {
               "samples": [
-                0.327,
-                0.317,
-                0.31,
-                0.314,
-                0.341
+                0.321,
+                0.313,
+                0.319,
+                0.307,
+                0.307
               ],
-              "median": 0.317,
-              "min": 0.31,
-              "max": 0.341
+              "median": 0.313,
+              "min": 0.307,
+              "max": 0.321
             }
           },
           {
@@ -114,15 +114,15 @@
             "reason": "ok",
             "verifyMs": {
               "samples": [
-                0.38,
-                0.368,
-                0.374,
-                0.379,
-                0.37
+                0.357,
+                0.343,
+                0.341,
+                0.352,
+                0.339
               ],
-              "median": 0.374,
-              "min": 0.368,
-              "max": 0.38
+              "median": 0.343,
+              "min": 0.339,
+              "max": 0.357
             }
           },
           {
@@ -132,15 +132,15 @@
             "reason": "ok",
             "verifyMs": {
               "samples": [
-                0.414,
+                0.412,
+                0.399,
                 0.408,
-                0.397,
-                0.397,
-                0.405
+                0.405,
+                0.397
               ],
               "median": 0.405,
               "min": 0.397,
-              "max": 0.414
+              "max": 0.412
             }
           },
           {
@@ -150,15 +150,15 @@
             "reason": "ok",
             "verifyMs": {
               "samples": [
-                0.469,
-                0.465,
-                0.453,
-                0.452,
-                0.451
+                0.471,
+                0.479,
+                0.457,
+                0.459,
+                0.455
               ],
-              "median": 0.453,
-              "min": 0.451,
-              "max": 0.469
+              "median": 0.459,
+              "min": 0.455,
+              "max": 0.479
             }
           },
           {
@@ -196,36 +196,36 @@
         "timeoutMs": 2000,
         "rounds": [
           {
-            "tokenId": "e6614845-f4d6-4252-899c-11ad308a2a75",
+            "tokenId": "e564b8a2-4728-4de1-87bc-fee8dad6cdc7",
             "beforeValid": true,
-            "propagationMs": 3.679,
+            "propagationMs": 2.377,
             "afterValid": false,
-            "afterReason": "Token at index 0: Token e6614845-f4d6-4252-899c-11ad308a2a75 has been revoked"
+            "afterReason": "Token at index 0: Token e564b8a2-4728-4de1-87bc-fee8dad6cdc7 has been revoked"
           },
           {
-            "tokenId": "647dae15-a7e2-48a1-b41f-cb5ebc8d45be",
+            "tokenId": "fcfa4de5-329d-465e-8c4e-18cff6b1f397",
             "beforeValid": true,
-            "propagationMs": 2.363,
+            "propagationMs": 2.413,
             "afterValid": false,
-            "afterReason": "Token at index 0: Token 647dae15-a7e2-48a1-b41f-cb5ebc8d45be has been revoked"
+            "afterReason": "Token at index 0: Token fcfa4de5-329d-465e-8c4e-18cff6b1f397 has been revoked"
           },
           {
-            "tokenId": "cf9762a1-b334-46da-bce2-0dfb1ee1c5ed",
+            "tokenId": "b67b719d-c6c1-4aed-837f-29e475335e7f",
             "beforeValid": true,
-            "propagationMs": 2.433,
+            "propagationMs": 2.271,
             "afterValid": false,
-            "afterReason": "Token at index 0: Token cf9762a1-b334-46da-bce2-0dfb1ee1c5ed has been revoked"
+            "afterReason": "Token at index 0: Token b67b719d-c6c1-4aed-837f-29e475335e7f has been revoked"
           }
         ],
         "propagationMs": {
           "samples": [
-            3.679,
-            2.363,
-            2.433
+            2.377,
+            2.413,
+            2.271
           ],
-          "median": 2.433,
-          "min": 2.363,
-          "max": 3.679
+          "median": 2.377,
+          "min": 2.271,
+          "max": 2.413
         }
       }
     },
@@ -240,15 +240,15 @@
           "forgery": {
             "rejected": true,
             "probeReason": "Signature mismatch — key does not match claimed issuer",
-            "verifyReason": "Token at index 0: Invalid signature on token f2a39d31-4436-4cd0-89a9-735767739656"
+            "verifyReason": "Token at index 0: Invalid signature on token 155151ba-572d-44a5-b544-08544df0a82f"
           },
           "theft": {
             "rejected": true,
-            "verifyReason": "Chain subject mismatch: expected 12D3KooWLVkbNidkbpcrCi7mFmXsHXhrxbEiTwEQZi3V2q7uPaM4, got 12D3KooWDiDNu2jxfb21mt5JeHFsvUXtohQ2tDxNzJEwCUVHjxog"
+            "verifyReason": "Chain subject mismatch: expected 12D3KooWJsTy98KDH8uwn1Te3vKFoW95sNyAmYFSknaRo4VmADfa, got 12D3KooWEmz6KNr6wmCAKQmNPzQpswsUsjiPuH4UNWE4FbpTbqft"
           },
           "nonDelegatableExtension": {
             "rejected": true,
-            "errorMessage": "Token 8964a657-af03-4cef-af04-da62b792a984 is not delegatable"
+            "errorMessage": "Token a427ba54-5810-4bc6-91db-2cb2d40b810c is not delegatable"
           }
         },
         "legitimateControl": {
@@ -276,13 +276,13 @@
           {
             "name": "brokenLinkage",
             "valid": false,
-            "reason": "Chain break at index 1: expected issuer 12D3KooWLiFZqxdgyk5ccp9Lb7PuQhV2CfTyKPbKsFfNcwLp8vNZ, got 12D3KooWEMUbaPwvBTksgZTtzhX8Lvkknbjo25V5u6zB22k5HLmu",
+            "reason": "Chain break at index 1: expected issuer 12D3KooWFASHEYvjXVDhT5Ufozx8jiKFtvYFY3vVP47EChamxMWE, got 12D3KooWFfSxY6KsQvn8vwzE3xUrHLK2nb8WrMPcnq3TknHvQazg",
             "rejectedAsExpected": true
           },
           {
             "name": "wrongParentTokenId",
             "valid": false,
-            "reason": "Chain break at index 1: expected parentTokenId b2091827-28e5-49bd-9c42-6f98aefc0477, got 6f3f7b55-b0f7-4eee-bd50-8188d368e376",
+            "reason": "Chain break at index 1: expected parentTokenId 373b0746-0eb9-42f0-a293-8a22abd2e152, got 3d732b16-1bfe-4300-9a30-d8ca157f31de",
             "rejectedAsExpected": true
           },
           {
@@ -294,7 +294,7 @@
           {
             "name": "tamperedAction",
             "valid": false,
-            "reason": "Token at index 1: Invalid signature on token 7913fd0d-5788-483c-a072-48e4fa2bee9f",
+            "reason": "Token at index 1: Invalid signature on token f16f4eeb-19de-4f29-b0ab-fb61b50cc80e",
             "rejectedAsExpected": true
           }
         ]
@@ -309,14 +309,14 @@
       "metrics": {
         "timeoutMs": 2000,
         "tokenIds": [
-          "be6308ca-117a-45b1-931d-9a412ec5671a",
-          "ccac8d9d-2514-472c-ab73-e53e47dbb543"
+          "9ce1a23e-2d69-4081-9d63-2d8d83726d26",
+          "65636c20-7230-402a-bc06-29c4e39d0eea"
         ],
         "perTokenMs": [
-          1.889,
-          1.894
+          1.906,
+          1.91
         ],
-        "allRevokedMs": 1.894
+        "allRevokedMs": 1.91
       }
     }
   ],
@@ -325,6 +325,6 @@
     "passed": 5,
     "failed": 0,
     "allPassed": true,
-    "finishedAt": "2026-10-26T19:19:50.944Z"
+    "finishedAt": "2026-10-29T18:56:09.085Z"
   }
 }
