@@ -201,7 +201,7 @@ npm run experiment:bench    # 5 runs, writes results/bench-summary.json
 
 ## 6. Experiments and Evaluation
 
-> **Note:** Every number in this section is **[MEASURED]** and comes from a committed results file: `results/experiment-run-canonical.json` (local mesh, run `2026-10-26T14-21-35-709Z`, Node v24.10.0), `results/bench-summary.json` (median, with min–max, over 5 consecutive local runs; raw files in `results/bench/`), and `results/experiment-run-canonical-docker.json` (Docker testnet, run `2026-10-26T14-20-08-270Z`, Node v22.23.4). Statements that no run backs are labelled **[NOT MEASURED]**.
+> **Note:** Every number in this section is **[MEASURED]** and comes from a committed results file: `results/experiment-run-canonical.json` (local mesh, run `2026-10-29T20-27-16-041Z`, Node v24.10.0), `results/bench-summary.json` (median, with min–max, over 5 consecutive local runs; raw files in `results/bench/`), and `results/experiment-run-canonical-docker.json` (Docker testnet, run `2026-10-26T14-20-08-270Z`, Node v22.23.4). Statements that no run backs are labelled **[NOT MEASURED]**.
 
 **Method.** Five agents (bootstrap, issuer, delegatee, verifier, attacker) connect to the bootstrap node in a star topology. A scenario starts only after the revocation topic mesh has formed (the bootstrap node sees four connected peers, four subscribers and four mesh peers). In *local* mode the five libp2p nodes run in one OS process on 127.0.0.1. In *Docker* mode they run in five containers on one bridge network, and the runner drives them through an HTTP control API used only for orchestration; tokens and revocations still travel as signed tokens and GossipSub messages. Times come from `performance.now()`.
 
@@ -215,15 +215,15 @@ npm run experiment:bench    # 5 runs, writes results/bench-summary.json
 
 | Depth | Outcome | Verify time, canonical run (ms) | Verify time, median of 5 runs (min–max, ms) |
 |---|---|---|---|
-| 1 | valid | 0.077 | 0.077 (0.072–0.083) |
-| 2 | valid | 0.136 | 0.135 (0.125–0.138) |
-| 3 | valid | 0.180 | 0.178 (0.170–0.190) |
-| 4 | valid | 0.242 | 0.228 (0.223–0.239) |
-| 5 | valid | 0.280 | 0.279 (0.275–0.283) |
-| 6 | valid | 0.336 | 0.327 (0.313–0.340) |
-| 7 | valid | 0.396 | 0.364 (0.362–0.380) |
-| 8 | valid | 0.420 | 0.426 (0.405–0.441) |
-| 9 | rejected | 0.006 | 0.005 (0.004–0.005) |
+| 1 | valid | 0.076 | 0.081 (0.058–0.084) |
+| 2 | valid | 0.128 | 0.135 (0.105–0.158) |
+| 3 | valid | 0.172 | 0.179 (0.142–0.193) |
+| 4 | valid | 0.234 | 0.236 (0.187–0.242) |
+| 5 | valid | 0.265 | 0.279 (0.238–0.296) |
+| 6 | valid | 0.332 | 0.323 (0.276–0.330) |
+| 7 | valid | 0.379 | 0.376 (0.340–0.380) |
+| 8 | valid | 0.402 | 0.416 (0.375–0.431) |
+| 9 | rejected | 0.005 | 0.004 (0.003–0.005) |
 
 Verification time grows linearly with depth, at roughly 0.05 ms per added token, which matches one Ed25519 signature check per token. Depth 9 is rejected on the length check alone, before any signature work.
 
@@ -241,8 +241,8 @@ In Docker mode all depths 1–8 also verify and depth 9 is rejected, but each ca
 
 | Setting | Propagation time (ms) |
 |---|---|
-| Local, canonical run (3 rounds) | median 2.30 (min 2.24, max 2.35) |
-| Local, 5 runs | median of run medians 2.36 (min 2.30, max 2.47) |
+| Local, canonical run (3 rounds) | median 2.03 (min 2.00, max 2.30) |
+| Local, 5 runs | median of run medians 2.33 (min 2.21, max 2.40) |
 | Docker, canonical run (3 rounds) | median 4.86 (min 4.55, max 5.00) |
 
 The Docker figure includes two HTTP calls from the runner (the revoke request and each registry poll), so it overstates the pure gossip delay. The 2 ms polling interval limits resolution: these figures show that propagation takes a few milliseconds on a single host, not a precise latency.
@@ -282,11 +282,11 @@ This is one attempt per variant, so it demonstrates that these specific attacks 
 
 | Setting | Per-token time (ms) | Time until both are revoked (ms) |
 |---|---|---|
-| Local, canonical run | 4.07 and 4.08 | 4.08 |
-| Local, 5 runs | — | median 1.98 (min 1.70, max 2.70) |
+| Local, canonical run | 1.77 and 1.78 | 1.78 |
+| Local, 5 runs | — | median 1.90 (min 1.59, max 3.08) |
 | Docker, canonical run | 3.62 and 3.72 | 3.72 |
 
-The canonical local run is above the 5-run range, which shows how much run-to-run variation exists at the millisecond scale; no single run should be read as a stable latency.
+The canonical local run (1.78 ms) sits inside the five-run range (1.59–3.08 ms) and near the median (1.90 ms). The spread is still large at this timescale, so no single run should be read as a stable latency.
 
 ### 6.5 Threats to Validity
 
@@ -313,9 +313,11 @@ AgentTrust provides cryptographic Sybil resistance (you cannot forge tokens for 
 - **Web of trust / transitive reputation** (peers only issue to nodes already trusted by other nodes they trust)
 - **Rate limiting** at the issuer (outside the protocol)
 
-### 7.3 Zero-Knowledge Reputation (Proposed, Not Implemented)
+### 7.3 Chain disclosure and zero-knowledge reputation
 
-A natural extension of AgentTrust is *private trust verification*: a peer proves it holds a valid capability without revealing the full delegation chain (which leaks intermediate peer identities). This could be achieved via zk-SNARKs (e.g., Groth16 or PLONK proofs over the token structure). The proof system would generate a short proof that:
+**Disclosure [analytic, not a separate experiment].** Verification hands the verifier the full chain. A chain of depth *d* carries the root issuer plus *d* subject PeerIDs. When those parties are distinct, the verifier sees *d*+1 PeerIDs. Scenario 01 already records `chainLength` equal to depth for depths 1–8, so this count is a reading of that chain, not a new measurement, and this paragraph is not marked **[MEASURED]**.
+
+**Zero-knowledge reputation (proposed, not implemented).** A natural extension is *private trust verification*: a peer proves it holds a valid capability without revealing the full delegation chain (which leaks intermediate peer identities). This could be achieved via zk-SNARKs (e.g., Groth16 or PLONK proofs over the token structure). The proof system would generate a short proof that:
 1. A valid signed chain exists terminating at the prover's PeerID.
 2. No token in the chain appears in the current revocation set.
 3. The chain's root was issued by a known trusted issuer.

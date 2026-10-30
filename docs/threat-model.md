@@ -50,7 +50,7 @@ We assume the adversary **cannot**:
 | Revoked token replay | `scenario-02-revocation-timing` | Revocation registry blocks — PASS |
 | Delegation forgery (non-delegatable token re-used) | `scenario-03-sybil-probe` | Chain check rejects — PASS |
 | Sybil eclipse of revocation broadcast | Not in v0.1 test suite | Documented gap — GossipSub ≠ guaranteed delivery |
-| Broken chain linkage / wrong parent | `scenario-04` (planned harness) | `verifyChain` rejects |
+| Broken chain linkage / wrong parent | `scenario-04` | `verifyChain` rejects — PASS |
 | Concurrent revocations | `scenario-05` | Both IDs in registry before reject |
 
 ---
@@ -69,7 +69,7 @@ We assume the adversary **cannot**:
 
 2. **Revocation propagation delay** means there is a window between revocation issuance and universal propagation during which a revoked token may be accepted.
 
-3. **No ZK privacy.** A verifier sees the full delegation chain, including intermediate peer identities. Privacy-preserving verification (e.g., via zk-SNARKs) is future work.
+3. **No ZK privacy.** A verifier sees the full delegation chain: depth *d* shows the root issuer plus *d* subject PeerIDs when parties are distinct (analytic; scenario 01 records `chainLength`). Privacy-preserving verification is future work. An issuance-rate-limit design for economic Sybil tests is in `docs/SCENARIO-06-DESIGN.md` and is not implemented.
 
 4. **In-memory state.** A node restart clears its revocation registry, temporarily opening a replay window.
 

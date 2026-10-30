@@ -10,6 +10,7 @@
     ],
     "scripts": {
         "test": "node --experimental-vm-modules node_modules/.bin/jest --passWithNoTests",
+        "verify": "node scripts/verify-submission.mjs",
         "experiment": "node packages/experiments/runner.js",
         "experiment:bench": "node scripts/bench-experiments.mjs",
         "docker:env": "node docker/scripts/gen-testnet-env.mjs",

@@ -73,7 +73,7 @@ We are **not** claiming a full “trust stack” yet. Reputation, privacy-preser
 
 **Primary claim (go deep here):** decentralized **capability-based authorization** on libp2p — issue, delegate (depth ≤ 8), verify offline, revoke via gossip.
 
-| Track-4 theme | In this repo now | Proficient proof (plan / §6) |
+| Track-4 theme | In this repo now | Measured in paper §6 / canonical JSON |
 |---------------|------------------|------------------------------|
 | Capabilities | `capability.js`, `TrustManager` | Structured metrics per scenario |
 | Delegated trust | `delegation.js`, scenario 01/04 | Depths **1–8** accepted, **depth 9 rejected**, per-depth verify timings; spliced/tampered chains rejected |
@@ -82,7 +82,7 @@ We are **not** claiming a full “trust stack” yet. Reputation, privacy-preser
 | Sybil resistance | Crypto only (`sybil.js`, scenario 03) | Forgery / theft / non-delegatable extension — **not** unlimited fresh Peer IDs |
 | Reputation | Not implemented | Design pointer only (§7; optional gossip topic reserved) |
 | Identity continuity | Not implemented | Key rotation breaks old tokens — documented limitation |
-| Privacy | Not implemented | Full chain visible to verifier — ZK listed as future |
+| Privacy | Disclosure only (no ZK) | Depth *d* shows the root issuer plus *d* subject PeerIDs — analytic, paper §7.3 |
 
 **Execution modes (`AGENTRUST_MODE`):**
 
@@ -114,9 +114,7 @@ flowchart TB
   AgentIface --> RemoteAgents[RemoteTrustManager HTTP client]
 ```
 
-**Agent adapter** (new shared module): every scenario keeps the signature `runScenarioXX({ issuer, delegatee, verifier, attacker?, extras? })` where each agent is `{ role, peerId, publicKey, trustManager }`. `trustManager` is either real [`TrustManager`](agentrustweave-libp2p/packages/trust/src/TrustManager.js) (local) or a thin **HTTP client** with the same methods (`issue`, `delegate`, `verify`, `revoke`, `registry.isRevoked` via `GET /trust/revoked/:id`).
-
-Local mode stays fast for CI; Docker mode proves revocation and mesh behavior on container libp2p nodes.
+- Local and Docker agents share one scenario signature (`runScenarioXX({ issuer, delegatee, verifier, attacker })`). In Docker, `trustManager` is an HTTP client of the same methods (`packages/experiments/lib/`). That HTTP API is lab control only.
 
 ---
 
@@ -151,7 +149,9 @@ Local mode stays fast for CI; Docker mode proves revocation and mesh behavior on
 ## FAQ (reviewers & maintainers)
 
 **What should you know?**  
-“We implement **application-layer authorization** on libp2p: Ed25519 capability tokens, transitive delegation (max depth 8), local verification without issuer round-trips, and GossipSub revocation. Experiments are being upgraded to structured metrics and a Docker mesh; we clearly separate **crypto authorization** from **economic Sybil resistance**, **reputation**, and **privacy**, which libp2p docs also leave to applications.”
+“We implement **application-layer authorization** on libp2p: Ed25519 capability tokens, transitive delegation (max depth 8), local verification without issuer round-trips, and GossipSub revocation. 
+
+- Five scenarios already emit structured metrics on a local mesh and a Docker mesh. **Economic Sybil resistance**, **reputation**, and **zero-knowledge privacy** stay in paper §7. A chain of depth *d* shows the root issuer plus *d* subject PeerIDs to the verifier.”
 
 **What’s novel vs UCAN / JWT / SPIFFE?**  
 Not new cryptography — **integration**: same keys as Peer ID, revocation on **existing** GossipSub, evaluation on **js-libp2p 2.x** with open scenarios. Contribution is **evidence + spec** for agentic P2P, not a new token format war.
@@ -186,10 +186,14 @@ Requires Node.js 22 or newer (libp2p dependencies use `Promise.withResolvers`).
 
 ```bash
 npm install
-npm test
+npm run verify              # tests + one local run; see docs/REPRODUCTION.md
 npm run experiment          # local in-process; results/experiment-run-<timestamp>.json
 npm run experiment:bench    # 5 local runs; results/bench-summary.json
 ```
+
+The GitHub clone directory is `agentrust-libp2p`. The npm package name in this tree is `agentrustweave-libp2p`.
+
+Form answers: `docs/SUBMISSION_TRACK4.md`.
 
 Docker:
 
