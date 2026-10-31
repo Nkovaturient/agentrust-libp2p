@@ -12,6 +12,14 @@
   <a href="https://libp2p.tech/research-track"><img alt="Devcon 8 Track 4" src="https://img.shields.io/badge/Devcon%208-Track%204-7c3aed" /></a>
 </p>
 
+<p align="center">
+  <a href="https://www.loom.com/share/ff79c48e253043fabf9a7771cfb0f1b5"><img alt="Founder's intro, 2 minutes" src="https://img.shields.io/badge/Founder's%20intro-2%20min-625DF5?logo=loom&logoColor=white" /></a>
+  <a href="https://www.loom.com/share/fc61506680f74fe9956b5182ac808402"><img alt="Live demo" src="https://img.shields.io/badge/Live%20demo-Loom-625DF5?logo=loom&logoColor=white" /></a>
+  <a href="https://nkovaturient.github.io/agentrust-libp2p/"><img alt="GitHub Pages visual arc" src="https://img.shields.io/badge/Visual%20arc-GitHub%20Pages-1D9E75?logo=githubpages&logoColor=white" /></a>
+  <a href="https://github.com/Nkovaturient/agentrust-libp2p/blob/main/paper/Agentrust-Libp2p.md"><img alt="Draft research paper" src="https://img.shields.io/badge/Draft%20paper-markdown-0F6E56" /></a>
+  <a href="https://docs.google.com/presentation/d/1f49FwhkMlMkBmtAV75iOVLq6OwUghXA_/edit?usp=sharing&ouid=108746493474785450440&rtpof=true&sd=true"><img alt="Pitch deck" src="https://img.shields.io/badge/Pitch%20deck-Slides-F4B400?logo=googleslides&logoColor=white" /></a>
+</p>
+
 > **Track 4 — Agentic Trust Structures** · libp2p Resilient Networking Research Track · Devcon 8 Mumbai 2026
 
 <p align="center">
